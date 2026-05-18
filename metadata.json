@@ -1,0 +1,6 @@
+{
+  "name": "Portugal Media Observatory",
+  "description": "An agentic observatory tracking independent media vs mainstream coverage in Portugal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

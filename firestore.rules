@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isEmailVerified() {
+      return request.auth.token.email_verified == true;
+    }
+    function isAdmin() {
+      return isSignedIn() && isEmailVerified() && request.auth.token.email == 'hhenriques761@gmail.com';
+    }
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // --- Entities ---
+
+    // Outlets
+    match /outlets/{outletId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Articles
+    match /articles/{articleId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Independent Sources
+    match /independentSources/{sourceId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Submitted Items
+    match /submittedItems/{itemId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+    }
+
+    // Events
+    match /events/{eventId} {
+      allow read: if isSignedIn();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+
+      // Stage Runs (Sub-collection)
+      match /stageRuns/{runId} {
+        allow read: if isAdmin();
+        allow write: if isAdmin();
+      }
+    }
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "entities": {
+    "Outlet": {
+      "title": "Outlet",
+      "description": "Mainstream media outlet",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "outlet_type": { "type": "string", "enum": ["tv", "newspaper", "online", "radio", "agency", "institutional"] },
+        "country_code": { "type": "string" },
+        "url": { "type": "string" },
+        "owner_group": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "slug", "outlet_type"]
+    },
+    "Article": {
+      "title": "Article",
+      "description": "Mainstream article",
+      "type": "object",
+      "properties": {
+        "outletId": { "type": "string" },
+        "url": { "type": "string" },
+        "title": { "type": "string" },
+        "lead": { "type": "string" },
+        "body": { "type": "string" },
+        "language": { "type": "string" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "raw_metadata": { "type": "object" },
+        "content_hash": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["outletId", "url", "title"]
+    },
+    "IndependentSource": {
+      "title": "Independent Source",
+      "description": "Non-mainstream source",
+      "type": "object",
+      "properties": {
+        "display_name": { "type": "string" },
+        "handle": { "type": "string" },
+        "platform": { "type": "string", "enum": ["x", "tiktok", "blog", "site", "other"] },
+        "url": { "type": "string" },
+        "description": { "type": "string" },
+        "country_code": { "type": "string" },
+        "reputation_score": { "type": "number" },
+        "reputation_notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["display_name", "platform"]
+    },
+    "SubmittedItem": {
+      "title": "Submitted Item",
+      "description": "A manually submitted link or text",
+      "type": "object",
+      "properties": {
+        "independentSourceId": { "type": "string" },
+        "submitted_by": { "type": "string" },
+        "url": { "type": "string" },
+        "normalized_url": { "type": "string" },
+        "raw_text": { "type": "string" },
+        "source_type": { "type": "string", "enum": ["x", "tiktok", "blog", "article", "tv_manual", "other"] },
+        "topic_hints": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" },
+        "content_fetch_status": { "type": "string" },
+        "fetched_title": { "type": "string" },
+        "fetched_text": { "type": "string" },
+        "fetched_at": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "duplicate"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["source_type", "status"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Central investigation object",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "summary_pt": { "type": "string" },
+        "claim_core": { "type": "string" },
+        "date_hint": { "type": "string", "format": "date" },
+        "topics": { "type": "array", "items": { "type": "string" } },
+        "entities": { "type": "array", "items": { "type": "object" } },
+        "primarySubmittedItemId": { "type": "string" },
+        "reliability_score": { "type": "integer" },
+        "undercoverage_score": { "type": "integer" },
+        "status": { "type": "string" },
+        "kanbanParentTaskId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "status"]
+    },
+    "StageRun": {
+      "title": "Stage Run",
+      "description": "Pipeline stage execution",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "stage": { "type": "string" },
+        "status": { "type": "string" },
+        "kanbanTaskId": { "type": "string" },
+        "modelUsed": { "type": "string" },
+        "attemptCount": { "type": "integer" },
+        "inputSnapshot": { "type": "object" },
+        "outputSnapshot": { "type": "object" },
+        "errorMessage": { "type": "string" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "finishedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["eventId", "stage", "status"]
+    }
+  },
+  "firestore": {
+    "outlets": {
+      "schema": "Outlet",
+      "description": "Mainstream outlets"
+    },
+    "articles": {
+      "schema": "Article",
+      "description": "Mainstream articles"
+    },
+    "independentSources": {
+      "schema": "IndependentSource",
+      "description": "Non-mainstream sources"
+    },
+    "submittedItems": {
+      "schema": "SubmittedItem",
+      "description": "Manual submissions"
+    },
+    "events": {
+      "schema": "Event",
+      "description": "Investigations"
+    },
+    "events/{eventId}/stageRuns": {
+      "schema": "StageRun",
+      "description": "Stage execution history"
+    }
+  }
+}
